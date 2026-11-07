@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AQ8T | Capital with conviction. Execution with discipline.</title>
+<meta name="description" content="AQ8T is built on relationships. Relationship, human, strategic, and financial capital, working together with disciplined execution. Based in Miami, connected worldwide.">
+<meta property="og:title" content="AQ8T | Capital with conviction. Execution with discipline.">
+<meta property="og:description" content="Built on relationships. Based in Miami, connected worldwide.">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="assets/favicon-16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink-2: #0f1211;
+    --charcoal: #1F2422;
+    --paper: #FAFAFA;
+    --sand: #E6E4DD;
+    --slate: #8A8F8D;
+    --mint: #46D6B4;
+    --mint-bright: #5FE9C6;
+    --line: rgba(255,255,255,0.10);
+    --gutter: clamp(1rem, 6vw, 6rem);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: "Albert Sans", "Helvetica Neue", Arial, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  ::selection { background: var(--mint); color: var(--ink); }
+
+  .wrap { max-width: 1160px; margin: 0 auto; }
+  .eight { color: var(--mint); }
+
+  .eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+  .eyebrow .num { color: var(--mint); }
+
+  section {
+    position: relative;
+    padding: clamp(5rem, 11vw, 9rem) var(--gutter);
+    border-top: 1px solid var(--line);
+  }
+
+  /* ---------- NAV ---------- */
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.6rem var(--gutter);
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-mark { font-weight: 700; font-size: 1.2rem; letter-spacing: 0.01em; text-decoration: none; }
+  .nav-cta {
+    text-decoration: none; font-size: 0.85rem; font-weight: 600;
+    color: var(--ink); background: var(--mint);
+    padding: 0.6rem 1.2rem; border-radius: 3px;
+    transition: background .2s ease; white-space: nowrap;
+  }
+  .nav-cta:hover { background: var(--mint-bright); }
+
+  /* ---------- HERO ---------- */
+
+  #hero {
+    border-top: none;
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding-top: 9rem; padding-bottom: 0;
+  }
+  .hero-body { max-width: 620px; }
+
+  /* ---------- HERO SCENE (full-bleed) ---------- */
+
+  #hero { overflow: hidden; }
+  .hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+  .hero-fade {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      linear-gradient(90deg, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.6) 38%, rgba(10,10,10,0) 62%),
+      linear-gradient(0deg, var(--ink) 0%, rgba(10,10,10,0) 28%);
+  }
+  #hero > .wrap { position: relative; z-index: 1; width: 100%; }
+  .hero-eyebrow { margin-bottom: 1.6rem; }
+  h1.hero-title {
+    font-size: clamp(2.4rem, 5.2vw, 4.2rem);
+    line-height: 1.08; font-weight: 700; letter-spacing: -0.02em;
+  }
+  h1.hero-title .muted { color: var(--slate); }
+  .hero-sub {
+    margin-top: 1.6rem; font-size: clamp(1.02rem, 1.4vw, 1.18rem);
+    color: var(--slate); max-width: 600px; line-height: 1.65;
+  }
+  .hero-stats {
+    margin-top: clamp(4rem, 9vw, 7rem);
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--line);
+  }
+  .stat { padding: 2rem 1.5rem 2.4rem 0; }
+  .stat + .stat { padding-left: 1.5rem; border-left: 1px solid var(--line); }
+  .stat .val { font-family: "JetBrains Mono", monospace; color: var(--mint); font-size: clamp(1.4rem, 2.4vw, 1.9rem); }
+  .stat .lbl { margin-top: .6rem; color: var(--slate); font-size: .88rem; line-height: 1.45; }
+
+  /* ---------- REVEAL ---------- */
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+  /* ---------- SECTION HEAD ---------- */
+
+  .section-head { max-width: 640px; margin-bottom: 3rem; }
+  .section-title {
+    margin-top: 0.9rem; font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700; letter-spacing: -0.01em; line-height: 1.25;
+  }
+  .section-desc { margin-top: 1rem; color: var(--slate); font-size: 1.02rem; line-height: 1.65; }
+
+  /* ---------- GRIDS (shared) ---------- */
+
+  .grid {
+    display: grid; gap: 1px;
+    background: var(--line); border: 1px solid var(--line);
+  }
+  .grid.g4 { grid-template-columns: repeat(4, 1fr); }
+  .grid.g3 { grid-template-columns: repeat(3, 1fr); }
+  .grid.g2 { grid-template-columns: repeat(2, 1fr); }
+  .cell { background: var(--ink); padding: 2.2rem 1.8rem; transition: background .2s ease; }
+  .cell:hover { background: var(--ink-2); }
+  .cell h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.6rem; }
+  .cell p { color: var(--slate); font-size: 0.93rem; line-height: 1.6; }
+  .cell .num {
+    font-family: "JetBrains Mono", monospace; color: var(--mint);
+    font-size: 0.85rem; margin-bottom: 1.2rem; display: block;
+  }
+  .cell .tag {
+    font-family: "JetBrains Mono", monospace; font-size: 0.7rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--mint); margin-bottom: 1rem; display: block;
+  }
+  .cell.featured { background: linear-gradient(160deg, rgba(70,214,180,0.08), transparent 65%), var(--ink); }
+
+  /* ---------- FOCUS ---------- */
+
+  .focus-card {
+    border: 1px solid var(--line);
+    display: grid; grid-template-columns: 1fr 1fr;
+  }
+  .focus-card > div { padding: 2.6rem 2.2rem; }
+  .focus-card > div + div { border-left: 1px solid var(--line); }
+  .focus-card h3 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; margin-bottom: 1rem; letter-spacing: -0.01em; }
+  .focus-card p { color: var(--sand); line-height: 1.7; }
+  .focus-list { list-style: none; }
+  .focus-list li { padding: 1rem 0; border-bottom: 1px solid var(--line); color: var(--slate); font-size: .95rem; line-height: 1.55; }
+  .focus-list li:first-child { padding-top: 0; }
+  .focus-list li:last-child { border-bottom: none; padding-bottom: 0; }
+  .focus-list strong { color: var(--paper); font-weight: 600; display: block; margin-bottom: .2rem; }
+
+  /* ---------- CRITERIA ---------- */
+
+  .criteria-item .val {
+    font-family: "JetBrains Mono", monospace; color: var(--mint);
+    font-size: 1.15rem; display: block; margin-bottom: 0.5rem;
+  }
+
+  /* ---------- CONTACT ---------- */
+
+  .channel a.mail {
+    display: inline-block; margin-top: 1.4rem;
+    font-family: "JetBrains Mono", monospace; font-size: .92rem;
+    color: var(--paper); text-decoration: none;
+    border-bottom: 1px solid var(--mint); padding-bottom: 2px;
+    transition: color .2s ease;
+  }
+  .channel a.mail:hover { color: var(--mint); }
+
+  .office {
+    margin-top: 2.4rem; display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 2rem; flex-wrap: wrap;
+  }
+  .office address { font-style: normal; color: var(--sand); line-height: 1.7; }
+  .office .note { color: var(--slate); font-size: .9rem; max-width: 420px; line-height: 1.6; }
+
+  /* ---------- FOOTER ---------- */
+
+  footer { padding: 2.6rem var(--gutter) 3rem; border-top: 1px solid var(--line); }
+  .foot-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+  .footer-mark { font-weight: 700; font-size: 0.98rem; }
+  .foot-links { display: flex; gap: 1.6rem; list-style: none; flex-wrap: wrap; }
+  .foot-links a { color: var(--slate); text-decoration: none; font-size: .85rem; }
+  .foot-links a:hover { color: var(--paper); }
+  .fine {
+    font-family: "JetBrains Mono", monospace; font-size: 0.72rem;
+    color: var(--slate); letter-spacing: 0.04em;
+  }
+  .disclaimer { margin-top: 1.8rem; color: #5d6260; font-size: .74rem; line-height: 1.6; max-width: 980px; }
+
+  /* ---------- RESPONSIVE ---------- */
+
+  @media (max-width: 980px) {
+    .grid.g4 { grid-template-columns: repeat(2, 1fr); }
+    .grid.g3 { grid-template-columns: 1fr; }
+    .hero-stats { grid-template-columns: repeat(2, 1fr); }
+    .stat:nth-child(3) { padding-left: 0; border-left: none; }
+    .stat:nth-child(n+3) { border-top: 1px solid var(--line); }
+    .focus-card { grid-template-columns: 1fr; }
+    .focus-card > div + div { border-left: none; border-top: 1px solid var(--line); }
+  }
+  @media (max-width: 720px) {
+    .hero-fade {
+      background:
+        linear-gradient(180deg, rgba(10,10,10,0.6) 0%, rgba(10,10,10,0.35) 60%, rgba(10,10,10,0.75) 100%);
+    }
+  }
+  @media (max-width: 640px) {
+    #hero { min-height: auto; }
+    .grid.g4, .grid.g2 { grid-template-columns: 1fr; }
+    .stat { padding-right: 1rem; }
+    .stat + .stat { padding-left: 1rem; }
+    .stat:nth-child(3) { padding-left: 0; }
+    .stat .val { font-size: 1.05rem; white-space: nowrap; }
+    .focus-card > div { padding: 2rem 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-mark" href="#hero">AQ<span class="eight">8</span>T</a>
+  <a class="nav-cta" href="#contact">Let&rsquo;s Talk</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas class="hero-canvas" id="mark3d" aria-hidden="true"></canvas>
+  <div class="hero-fade" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="hero-body">
+      <div class="eyebrow hero-eyebrow">Built on Relationships &middot; Miami + Worldwide</div>
+      <h1 class="hero-title">Capital with conviction. <span class="muted">Execution with discipline.</span></h1>
+      <p class="hero-sub">Every AQ<span class="eight">8</span>T portfolio company gets our network, our team, our strategy, our capital, and our disciplined execution.</p>
+    </div>
+    <div class="hero-stats reveal">
+      <div class="stat"><div class="val">30+ yrs</div><div class="lbl">Founding, running, and exiting companies</div></div>
+      <div class="stat"><div class="val">Full stack</div><div class="lbl">Relationship, human, strategic, and financial capital</div></div>
+      <div class="stat"><div class="val">$1B+</div><div class="lbl">Revenue generated across businesses led</div></div>
+      <div class="stat"><div class="val">Durable growth</div><div class="lbl">Lasting demand with room to grow</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- APPROACH -->
+<section id="approach">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">01</span> / Approach</div>
+      <h2 class="section-title">Capital is common. Execution isn't.</h2>
+      <p class="section-desc">Capital alone rarely moves the needle. AQ<span class="eight">8</span>T pairs it with operating experience, a deep network, and a process we repeat with discipline every time.</p>
+    </div>
+    <div class="grid g4 reveal">
+      <div class="cell">
+        <h3>Operating edge.</h3>
+        <p>Most firms just bring a checkbook. We bring leaders who reduce execution risk, and that changes the outcome.</p>
+      </div>
+      <div class="cell">
+        <h3>A platform, not a single bet.</h3>
+        <p>Disciplined ownership across diversified ventures. The portfolio carries the weight, and every company gets the full platform behind it.</p>
+      </div>
+      <div class="cell">
+        <h3>Relationships compound.</h3>
+        <p>The right introduction at the right moment can be worth more than the capital itself. Our network is part of every investment.</p>
+      </div>
+      <div class="cell">
+        <h3>Built on fundamentals.</h3>
+        <p>No shortcuts, no hype cycles. Every commitment is grounded in real demand and a clear path to long-term value.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODEL -->
+<section id="model">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">02</span> / How We Work</div>
+      <h2 class="section-title">Full Capital Stack</h2>
+      <p class="section-desc">Every layer of the stack works together, and relationships sit at the base. They open the doors that people, strategy, and money walk through.</p>
+    </div>
+    <div class="grid g4 reveal">
+      <div class="cell featured">
+        <span class="num">01</span>
+        <h3>Relationship</h3>
+        <p>Decades of trust across industries and leadership circles, put to work for our ventures from day one.</p>
+      </div>
+      <div class="cell">
+        <span class="num">02</span>
+        <h3>Human</h3>
+        <p>Experienced operators and a dedicated team who put the right people in the seats that matter.</p>
+      </div>
+      <div class="cell">
+        <span class="num">03</span>
+        <h3>Strategic</h3>
+        <p>Pattern recognition from building, growing, and selling. We know what breaks at each stage and plan for it.</p>
+      </div>
+      <div class="cell">
+        <span class="num">04</span>
+        <h3>Financial</h3>
+        <p>Patient, phased, and performance-gated. The business sets the pace, and capital keeps up with it, step for step.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOCUS -->
+<section id="focus">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">03</span> / The Common Thread</div>
+      <h2 class="section-title">Markets that keep moving forward.</h2>
+    </div>
+    <div class="focus-card reveal">
+      <div>
+        <h3>Forward motion</h3>
+        <p>We look for markets where demand only moves in one direction. The companies that win them will be the ones that execute with trust, discipline, and the right relationships.</p>
+      </div>
+      <div>
+        <ul class="focus-list">
+          <li><strong>One-way demand</strong>Needs that grow every year, not trends that fade.</li>
+          <li><strong>Execution decides</strong>The idea gets attention. Operations, trust, and distribution win the market.</li>
+          <li><strong>Built to stand alone</strong>Each venture runs independently, with AQ<span class="eight">8</span>T as the long-term platform behind it.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CRITERIA -->
+<section id="criteria">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">04</span> / Fit</div>
+      <h2 class="section-title">Strong leaders, real demand, sound economics.</h2>
+      <p class="section-desc">All three, every time. That&rsquo;s what makes a fit.</p>
+    </div>
+    <div class="grid g3 reveal">
+      <div class="cell criteria-item">
+        <span class="val">Leadership</span>
+        <h3>People we&rsquo;d build with</h3>
+        <p>Conviction, integrity, and a shared appetite for disciplined execution.</p>
+      </div>
+      <div class="cell criteria-item">
+        <span class="val">Demand</span>
+        <h3>Need over noise</h3>
+        <p>Not a trend, not a hype cycle. A need that grows steadily, year after year.</p>
+      </div>
+      <div class="cell criteria-item">
+        <span class="val">Value</span>
+        <h3>Economics that hold up</h3>
+        <p>Unit economics that improve as the business grows.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">05</span> / Structure</div>
+      <h2 class="section-title">Four disciplines. One standard.</h2>
+      <p class="section-desc">The firm is organized around four disciplines, each with its own focus.</p>
+    </div>
+
+    <div class="grid g4 reveal">
+      <div class="cell">
+        <span class="tag">Investments</span>
+        <h3>Investments &amp; Research</h3>
+        <p>Sourcing, diligence, and market research across every opportunity we evaluate.</p>
+      </div>
+      <div class="cell">
+        <span class="tag">Operations</span>
+        <h3>Venture Operations</h3>
+        <p>Hands-on execution alongside venture leadership: systems, talent, and reporting.</p>
+      </div>
+      <div class="cell">
+        <span class="tag">Capital</span>
+        <h3>Investor Relations</h3>
+        <p>Clear, consistent communication with the people who back the platform.</p>
+      </div>
+      <div class="cell">
+        <span class="tag">Network</span>
+        <h3>Partnerships</h3>
+        <p>Building and maintaining the relationships that open doors for our ventures.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">06</span> / Contact</div>
+      <h2 class="section-title">Let&rsquo;s talk.</h2>
+      <p class="section-desc">Start with a conversation. Choose the inbox that fits.</p>
+    </div>
+    <div class="grid g3 reveal">
+      <div class="cell channel">
+        <span class="tag">Founders &amp; Ventures</span>
+        <h3>Building with us</h3>
+        <p>For leaders whose ventures match what we look for.</p>
+        <a class="mail" href="mailto:ventures@aq8t.io">ventures@aq<span class="eight">8</span>t.io</a>
+      </div>
+      <div class="cell channel">
+        <span class="tag">Investor Relations</span>
+        <h3>For investors</h3>
+        <p>For current investors and investor inquiries.</p>
+        <a class="mail" href="mailto:investors@aq8t.io">investors@aq<span class="eight">8</span>t.io</a>
+      </div>
+      <div class="cell channel">
+        <span class="tag">General</span>
+        <h3>Everything else</h3>
+        <p>Partnerships, media, and general questions.</p>
+        <a class="mail" href="mailto:info@aq8t.io">info@aq<span class="eight">8</span>t.io</a>
+      </div>
+    </div>
+    <div class="office reveal">
+      <address>
+        <div class="eyebrow" style="margin-bottom:.8rem">Miami + Worldwide</div>
+        AQ<span class="eight">8</span>T<br>
+        1000 Brickell Avenue, Suite 715<br>
+        Miami, FL 33131
+      </address>
+      <p class="note">Based in Miami. Connected worldwide.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="footer-mark">AQ<span class="eight">8</span>T</div>
+      <ul class="foot-links">
+        <li><a href="#approach">Approach</a></li>
+        <li><a href="#model">How We Work</a></li>
+        <li><a href="#focus">Common Thread</a></li>
+        <li><a href="#criteria">Fit</a></li>
+        <li><a href="#team">Structure</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="fine">&copy; 2027 AQ<span class="eight">8</span>T. All rights reserved.</div>
+    </div>
+    <p class="disclaimer">This website is for informational purposes only. It is not an offer to sell, or a solicitation of an offer to buy, any security or investment product, and it does not provide investment, tax, legal, or other professional advice. Any offering, if made, will be made only through formal offering documents to qualified persons where permitted by law. Statements about strategy, markets, or future plans are forward-looking, reflect current views, and are subject to change; actual results may differ materially. Past results do not guarantee future outcomes. Contacting AQ<span class="eight">8</span>T does not create an advisory, client, or confidential relationship, and information submitted is not treated as confidential unless agreed in writing. Content may change without notice.</p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+<script>
+
+
+  // Reveal on scroll
+  (function () {
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { threshold: 0.12 });
+    els.forEach(function (e) { io.observe(e); });
+  })();
+
+  // Hero 3D: full-bleed deep-field star scene behind the hero copy. Stars drift
+  // toward the camera and wrap around; the field tilts slightly with the pointer.
+  (function () {
+    var canvas = document.getElementById('mark3d');
+    var panel = canvas ? canvas.closest('#hero') : null;
+    if (!canvas || !panel || typeof THREE === 'undefined') return;
+
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(38, 1, 0.1, 200);
+    var BASE_Z = 9.2;
+    camera.position.set(0, 0, BASE_Z);
+
+    var MINT = new THREE.Color(0x46d6b4);
+    var SAND = new THREE.Color(0xe6e4dd);
+    var DIM = new THREE.Color(0x5b625f);
+
+    // Round point sprite: solid core with a soft edge, so stars never render as squares
+    var dotCanvas = document.createElement('canvas');
+    dotCanvas.width = dotCanvas.height = 64;
+    var dg = dotCanvas.getContext('2d');
+    var grd = dg.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grd.addColorStop(0, 'rgba(255,255,255,1)');
+    grd.addColorStop(0.45, 'rgba(255,255,255,0.95)');
+    grd.addColorStop(0.7, 'rgba(255,255,255,0.35)');
+    grd.addColorStop(1, 'rgba(255,255,255,0)');
+    dg.fillStyle = grd;
+    dg.fillRect(0, 0, 64, 64);
+
+    // Star field: mostly sand-to-slate, a few mint
+    var N = 5000, DEPTH = 40;
+    var pos = new Float32Array(N * 3), col = new Float32Array(N * 3);
+    for (var i = 0; i < N; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 40;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 24;
+      pos[i * 3 + 2] = -Math.random() * DEPTH;
+      var c = Math.random() < 0.15 ? MINT : SAND.clone().lerp(DIM, Math.random() * 0.7);
+      col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
+    }
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    var field = new THREE.Points(geo, new THREE.PointsMaterial({
+      size: 0.07, map: new THREE.CanvasTexture(dotCanvas), alphaTest: 0.01, vertexColors: true,
+      transparent: true, opacity: 0.95, sizeAttenuation: true, depthWrite: false
+    }));
+    var holder = new THREE.Group();
+    holder.add(field);
+    scene.add(holder);
+
+    function resize() {
+      var w = panel.clientWidth, h = panel.clientHeight;
+      if (!w || !h) return;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    var px = 0, py = 0;
+    panel.addEventListener('pointermove', function (e) {
+      var b = panel.getBoundingClientRect();
+      px = (e.clientX - b.left) / b.width - 0.5;
+      py = (e.clientY - b.top) / b.height - 0.5;
+    });
+    panel.addEventListener('pointerleave', function () { px = 0; py = 0; });
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var clock = new THREE.Clock();
+    var TILT = 0.06;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      var dt = reduceMotion ? 0 : Math.min(clock.getDelta(), 0.05);
+      if (dt) {
+        for (var i = 0; i < N; i++) {
+          var z = pos[i * 3 + 2] + dt * 0.6;
+          if (z > BASE_Z - 1) z -= DEPTH;
+          pos[i * 3 + 2] = z;
+        }
+        geo.attributes.position.needsUpdate = true;
+      }
+      holder.rotation.y += (px * TILT - holder.rotation.y) * 0.05;
+      holder.rotation.x += (py * TILT * 0.6 - holder.rotation.x) * 0.05;
+      renderer.render(scene, camera);
+    }
+    animate();
+  })();
+</script>
+</body>
+</html>
