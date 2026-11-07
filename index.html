@@ -530,7 +530,7 @@
     geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
     var field = new THREE.Points(geo, new THREE.PointsMaterial({
-      size: 0.07, map: new THREE.CanvasTexture(dotCanvas), alphaTest: 0.01, vertexColors: true,
+      size: 0.11, map: new THREE.CanvasTexture(dotCanvas), alphaTest: 0.01, vertexColors: true,
       transparent: true, opacity: 0.95, sizeAttenuation: true, depthWrite: false
     }));
     var holder = new THREE.Group();
@@ -548,7 +548,7 @@
       camera.updateProjectionMatrix();
       renderer.setSize(w, h, false);
       var narrow = w < 720;
-      field.material.size = narrow ? 0.14 : 0.07;
+      field.material.size = narrow ? 0.18 : 0.11;
       speed = narrow ? 1.1 : 0.6;
     }
     window.addEventListener('resize', resize);
