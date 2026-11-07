@@ -226,7 +226,7 @@
   @media (max-width: 720px) {
     .hero-fade {
       background:
-        linear-gradient(180deg, rgba(10,10,10,0.6) 0%, rgba(10,10,10,0.35) 60%, rgba(10,10,10,0.75) 100%);
+        linear-gradient(180deg, rgba(10,10,10,0.45) 0%, rgba(10,10,10,0.15) 60%, rgba(10,10,10,0.7) 100%);
     }
   }
   @media (max-width: 640px) {
@@ -445,7 +445,7 @@
       <address>
         <div class="eyebrow" style="margin-bottom:.8rem">Miami + Worldwide</div>
         AQ<span class="eight">8</span>T<br>
-        1000 Brickell Avenue, Suite 715<br>
+        777 Brickell Avenue, Suite 500<br>
         Miami, FL 33131
       </address>
       <p class="note">Based in Miami. Connected worldwide.</p>
@@ -537,12 +537,19 @@
     holder.add(field);
     scene.add(holder);
 
+    // Narrow screens only see the slow-moving centre of the field, so stars
+    // are drawn larger and drift faster there to keep the motion visible
+    var speed = 0.6;
+
     function resize() {
       var w = panel.clientWidth, h = panel.clientHeight;
       if (!w || !h) return;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h, false);
+      var narrow = w < 720;
+      field.material.size = narrow ? 0.14 : 0.07;
+      speed = narrow ? 1.1 : 0.6;
     }
     window.addEventListener('resize', resize);
     resize();
@@ -564,7 +571,7 @@
       var dt = reduceMotion ? 0 : Math.min(clock.getDelta(), 0.05);
       if (dt) {
         for (var i = 0; i < N; i++) {
-          var z = pos[i * 3 + 2] + dt * 0.6;
+          var z = pos[i * 3 + 2] + dt * speed;
           if (z > BASE_Z - 1) z -= DEPTH;
           pos[i * 3 + 2] = z;
         }
