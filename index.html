@@ -504,15 +504,16 @@
       { size: 16, density: 0.4,  speed: [12, 18], trail: [10, 20], alpha: 0.95, shift: 22 }
     ];
 
-    var w = 0, h = 0, x0 = 0, cols = [], px = 0, ox = 0;
+    var w = 0, h = 0, x0 = 0, cols = [], px = 0, ox = 0, dimAll = 1;
 
     function rand(a, b) { return a + Math.random() * (b - a); }
     function bit() { return Math.random() < 0.5 ? '0' : '1'; }
 
     function makeCol(L, x, above) {
       var n = Math.round(rand(L.trail[0], L.trail[1])), g = [];
+      var slow = w < 720 ? 0.5 : 1;
       for (var i = 0; i < n; i++) g.push(bit());
-      return { L: L, x: x, g: g, y: above ? -rand(0, h / L.row) : rand(-n, h / L.row), v: rand(L.speed[0], L.speed[1]) };
+      return { L: L, x: x, g: g, y: above ? -rand(0, h / L.row) : rand(-n, h / L.row), v: rand(L.speed[0], L.speed[1]) * slow };
     }
 
     function resize() {
@@ -521,13 +522,18 @@
       if (!w || !h) return;
       canvas.width = w * dpr; canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // Phones: the rain sits behind the text, so use fewer, dimmer streams and
+      // drop the bright front layer to keep it quiet
       var narrow = w < 720, scale = narrow ? 1.15 : 1;
       x0 = narrow ? 0 : w * 0.45;
+      dimAll = narrow ? 0.18 : 1;
       cols = [];
-      LAYERS.forEach(function (L) {
+      LAYERS.forEach(function (L, li) {
+        if (narrow && li === LAYERS.length - 1) return;
         L.px = Math.round(L.size * scale);
         L.row = L.px * 0.82;
-        for (var x = x0; x < w; x += L.px * 0.68) if (Math.random() < L.density) cols.push(makeCol(L, x, false));
+        var density = narrow ? L.density * 0.22 : L.density;
+        for (var x = x0; x < w; x += L.px * 0.68) if (Math.random() < density) cols.push(makeCol(L, x, false));
       });
     }
     window.addEventListener('resize', resize);
@@ -560,7 +566,7 @@
           if (row < 0) break;
           var yy = row * L.row;
           if (yy > h) continue;
-          var a = L.alpha * edge * (i === 0 ? 1 : 1 - i / col.g.length);
+          var a = L.alpha * dimAll * edge * (i === 0 ? 1 : 1 - i / col.g.length);
           ctx.fillStyle = 'rgba(' + (i === 0 ? HEAD : (L === LAYERS[0] ? DIM : MINT)) + ',' + a.toFixed(3) + ')';
           ctx.fillText(col.g[i], x, yy);
         }
