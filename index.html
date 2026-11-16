@@ -471,7 +471,6 @@
   </div>
 </footer>
 
-<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 <script>
 
 
@@ -485,103 +484,108 @@
     els.forEach(function (e) { io.observe(e); });
   })();
 
-  // Hero 3D: full-bleed deep-field star scene behind the hero copy. Stars drift
-  // toward the camera and wrap around; the field tilts slightly with the pointer.
+  // Hero: binary (0/1) rain behind the hero copy. Fine, dense streams in three
+  // depth layers on the right, fading out before the headline (full width on
+  // phones). Layers shift slightly with the pointer.
   (function () {
     var canvas = document.getElementById('mark3d');
     var panel = canvas ? canvas.closest('#hero') : null;
-    if (!canvas || !panel || typeof THREE === 'undefined') return;
+    if (!canvas || !panel || !canvas.getContext) return;
+    var ctx = canvas.getContext('2d');
 
-    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    var MINT = '70,214,180', HEAD = '233,255,248', DIM = '91,98,95';
+    var FONT = '"JetBrains Mono", monospace';
 
-    var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(38, 1, 0.1, 200);
-    var BASE_Z = 9.2;
-    camera.position.set(0, 0, BASE_Z);
+    // size: glyph px, density: share of column slots used, speed: rows/sec,
+    // trail: digits per stream, alpha: brightness, shift: pointer parallax px
+    var LAYERS = [
+      { size: 9,  density: 0.95, speed: [5, 9],   trail: [20, 36], alpha: 0.3,  shift: 5 },
+      { size: 12, density: 0.8,  speed: [8, 13],  trail: [16, 30], alpha: 0.6,  shift: 12 },
+      { size: 16, density: 0.4,  speed: [12, 18], trail: [10, 20], alpha: 0.95, shift: 22 }
+    ];
 
-    var MINT = new THREE.Color(0x46d6b4);
-    var SAND = new THREE.Color(0xe6e4dd);
-    var DIM = new THREE.Color(0x5b625f);
+    var w = 0, h = 0, x0 = 0, cols = [], px = 0, ox = 0;
 
-    // Round point sprite: solid core with a soft edge, so stars never render as squares
-    var dotCanvas = document.createElement('canvas');
-    dotCanvas.width = dotCanvas.height = 64;
-    var dg = dotCanvas.getContext('2d');
-    var grd = dg.createRadialGradient(32, 32, 0, 32, 32, 32);
-    grd.addColorStop(0, 'rgba(255,255,255,1)');
-    grd.addColorStop(0.45, 'rgba(255,255,255,0.95)');
-    grd.addColorStop(0.7, 'rgba(255,255,255,0.35)');
-    grd.addColorStop(1, 'rgba(255,255,255,0)');
-    dg.fillStyle = grd;
-    dg.fillRect(0, 0, 64, 64);
+    function rand(a, b) { return a + Math.random() * (b - a); }
+    function bit() { return Math.random() < 0.5 ? '0' : '1'; }
 
-    // Star field: mostly sand-to-slate, a few mint
-    var N = 5000, DEPTH = 40;
-    var pos = new Float32Array(N * 3), col = new Float32Array(N * 3);
-    for (var i = 0; i < N; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 40;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 24;
-      pos[i * 3 + 2] = -Math.random() * DEPTH;
-      var c = Math.random() < 0.15 ? MINT : SAND.clone().lerp(DIM, Math.random() * 0.7);
-      col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
+    function makeCol(L, x, above) {
+      var n = Math.round(rand(L.trail[0], L.trail[1])), g = [];
+      for (var i = 0; i < n; i++) g.push(bit());
+      return { L: L, x: x, g: g, y: above ? -rand(0, h / L.row) : rand(-n, h / L.row), v: rand(L.speed[0], L.speed[1]) };
     }
-    var geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-    var field = new THREE.Points(geo, new THREE.PointsMaterial({
-      size: 0.11, map: new THREE.CanvasTexture(dotCanvas), alphaTest: 0.01, vertexColors: true,
-      transparent: true, opacity: 0.95, sizeAttenuation: true, depthWrite: false
-    }));
-    var holder = new THREE.Group();
-    holder.add(field);
-    scene.add(holder);
-
-    // Narrow screens only see the slow-moving centre of the field, so stars
-    // are drawn larger and drift faster there to keep the motion visible
-    var speed = 0.6;
 
     function resize() {
-      var w = panel.clientWidth, h = panel.clientHeight;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = panel.clientWidth; h = panel.clientHeight;
       if (!w || !h) return;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h, false);
-      var narrow = w < 720;
-      field.material.size = narrow ? 0.18 : 0.11;
-      speed = narrow ? 1.1 : 0.6;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var narrow = w < 720, scale = narrow ? 1.15 : 1;
+      x0 = narrow ? 0 : w * 0.45;
+      cols = [];
+      LAYERS.forEach(function (L) {
+        L.px = Math.round(L.size * scale);
+        L.row = L.px * 0.82;
+        for (var x = x0; x < w; x += L.px * 0.68) if (Math.random() < L.density) cols.push(makeCol(L, x, false));
+      });
     }
     window.addEventListener('resize', resize);
     resize();
 
-    var px = 0, py = 0;
     panel.addEventListener('pointermove', function (e) {
       var b = panel.getBoundingClientRect();
       px = (e.clientX - b.left) / b.width - 0.5;
-      py = (e.clientY - b.top) / b.height - 0.5;
     });
-    panel.addEventListener('pointerleave', function () { px = 0; py = 0; });
+    panel.addEventListener('pointerleave', function () { px = 0; });
+
+    function step(dt) {
+      ctx.clearRect(0, 0, w, h);
+      ctx.textBaseline = 'top';
+      var cur = null, fadeW = w * 0.18;
+      for (var c = 0; c < cols.length; c++) {
+        var col = cols[c], L = col.L, before = Math.floor(col.y);
+        col.y += col.v * dt;
+        if (Math.floor(col.y) !== before) {
+          // New head digit each row; occasionally flip one in the trail
+          col.g.unshift(bit()); col.g.pop();
+          if (Math.random() < 0.3) { var k = 1 + Math.floor(Math.random() * (col.g.length - 1)); col.g[k] = col.g[k] === '0' ? '1' : '0'; }
+        }
+        if ((col.y - col.g.length) * L.row > h) cols[c] = col = makeCol(L, col.x, true);
+        if (cur !== L) { ctx.font = '500 ' + L.px + 'px ' + FONT; cur = L; }
+        var x = col.x - ox * L.shift, head = Math.floor(col.y);
+        var edge = x0 ? Math.min(1, Math.max(0, (col.x - x0) / fadeW)) : 1;
+        for (var i = 0; i < col.g.length; i++) {
+          var row = head - i;
+          if (row < 0) break;
+          var yy = row * L.row;
+          if (yy > h) continue;
+          var a = L.alpha * edge * (i === 0 ? 1 : 1 - i / col.g.length);
+          ctx.fillStyle = 'rgba(' + (i === 0 ? HEAD : (L === LAYERS[0] ? DIM : MINT)) + ',' + a.toFixed(3) + ')';
+          ctx.fillText(col.g[i], x, yy);
+        }
+      }
+    }
 
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var clock = new THREE.Clock();
-    var TILT = 0.06;
+    if (reduceMotion) { step(0); return; }
 
-    function animate() {
-      requestAnimationFrame(animate);
-      var dt = reduceMotion ? 0 : Math.min(clock.getDelta(), 0.05);
-      if (dt) {
-        for (var i = 0; i < N; i++) {
-          var z = pos[i * 3 + 2] + dt * speed;
-          if (z > BASE_Z - 1) z -= DEPTH;
-          pos[i * 3 + 2] = z;
-        }
-        geo.attributes.position.needsUpdate = true;
-      }
-      holder.rotation.y += (px * TILT - holder.rotation.y) * 0.05;
-      holder.rotation.x += (py * TILT * 0.6 - holder.rotation.x) * 0.05;
-      renderer.render(scene, camera);
+    // Pause while the hero is off screen
+    var visible = true;
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (en) { visible = en[0].isIntersecting; }).observe(panel);
     }
-    animate();
+
+    var last = performance.now();
+    function animate(now) {
+      requestAnimationFrame(animate);
+      var dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      if (!visible) return;
+      ox += (px - ox) * 0.05;
+      step(dt);
+    }
+    requestAnimationFrame(animate);
   })();
 </script>
 </body>
